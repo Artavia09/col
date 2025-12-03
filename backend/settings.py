@@ -43,6 +43,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 AUTH_USER_MODEL = "api.Usuario"
+CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
     {

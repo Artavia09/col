@@ -24,6 +24,7 @@ from .views import (
     TestimonioEstudianteDetailView,
     UsuarioListCreateView,
     UsuarioDetailView,
+    LoginView,  # 🔹 Import de la vista de login
 )
 
 urlpatterns = [
@@ -62,4 +63,7 @@ urlpatterns = [
 
     path("usuario/", UsuarioListCreateView.as_view()),
     path("usuario/<int:pk>/", UsuarioDetailView.as_view()),
+
+    # 🔹 Endpoint de inicio de sesión (POST con username y password)
+    path("login/", LoginView.as_view()),
 ]

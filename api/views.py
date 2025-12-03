@@ -1,5 +1,10 @@
 from rest_framework import permissions
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from django.contrib.auth import authenticate, login
 
 from .models import (
     SchoolInfo,
@@ -157,3 +162,44 @@ class UsuarioDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     permission_classes = [permissions.IsAdminUser]
+
+
+class LoginView(APIView):
+    """
+    Vista de inicio de sesión.
+    - Método: POST
+    - Body JSON esperado: { "username": "...", "password": "..." }
+    """
+
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        # Validar que vengan ambos campos
+        if not username or not password:
+            return Response(
+                {"detail": "Debe enviar 'username' y 'password'."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Autenticar usando el sistema de auth de Django
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            #sesiones de Django:
+            return Response(
+                {
+                    "detail": "Inicio de sesión exitoso.",
+                    "username": user.username,
+                    "id": user.id,
+                },
+                status=status.HTTP_200_OK,
+            )
+        else:
+            # Usuario no válido
+            return Response(
+                {"detail": "Nombre de usuario o contraseña incorrectos."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
