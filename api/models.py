@@ -26,6 +26,9 @@ class Usuario(AbstractUser):
             self.is_superuser = False
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.username
+
 
 class SchoolInfo(models.Model):
     name = models.CharField(max_length=250, default="Escuela Joaquín García Monge")
@@ -111,6 +114,17 @@ class ExamDate(models.Model):
         return f"{self.title} - {self.date}"
 
 
+class PeriodoMatricula(models.Model):
+    programa = models.ForeignKey(Programa, on_delete=models.CASCADE, related_name="periodos_matricula")
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField()
+    descripcion = models.TextField(blank=True)
+    activo = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.programa.nombre} - {self.fecha_inicio} a {self.fecha_fin}"
+
+
 class Teacher(models.Model):
     name = models.CharField(max_length=200)
     role = models.CharField(max_length=150, blank=True)
@@ -159,3 +173,4 @@ class TestimonioEstudiante(models.Model):
 
     def __str__(self):
         return f"{self.nombre_estudiante} - {self.anio}"
+    
